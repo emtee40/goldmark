@@ -126,13 +126,13 @@ func IsBlank(bs []byte) bool {
 
 // VisualizeSpaces visualize invisible space characters.
 func VisualizeSpaces(bs []byte) []byte {
-	bs = bytes.Replace(bs, []byte(" "), []byte("[SPACE]"), -1)
-	bs = bytes.Replace(bs, []byte("\t"), []byte("[TAB]"), -1)
-	bs = bytes.Replace(bs, []byte("\n"), []byte("[NEWLINE]\n"), -1)
-	bs = bytes.Replace(bs, []byte("\r"), []byte("[CR]"), -1)
-	bs = bytes.Replace(bs, []byte("\v"), []byte("[VTAB]"), -1)
-	bs = bytes.Replace(bs, []byte("\x00"), []byte("[NUL]"), -1)
-	bs = bytes.Replace(bs, []byte("\ufffd"), []byte("[U+FFFD]"), -1)
+	bs = bytes.ReplaceAll(bs, []byte(" "), []byte("[SPACE]"))
+	bs = bytes.ReplaceAll(bs, []byte("\t"), []byte("[TAB]"))
+	bs = bytes.ReplaceAll(bs, []byte("\n"), []byte("[NEWLINE]\n"))
+	bs = bytes.ReplaceAll(bs, []byte("\r"), []byte("[CR]"))
+	bs = bytes.ReplaceAll(bs, []byte("\v"), []byte("[VTAB]"))
+	bs = bytes.ReplaceAll(bs, []byte("\x00"), []byte("[NUL]"))
+	bs = bytes.ReplaceAll(bs, []byte("\ufffd"), []byte("[U+FFFD]"))
 	return bs
 }
 
@@ -145,9 +145,9 @@ func TabWidth(currentPos int) int {
 // If the line contains tab characters, paddings may be not zero.
 // currentPos==0 and width==2:
 //
-//     position: 0    1
-//               [TAB]aaaa
-//     width:    1234 5678
+//	position: 0    1
+//	          [TAB]aaaa
+//	width:    1234 5678
 //
 // width=2 is in the tab character. In this case, IndentPosition returns
 // (pos=1, padding=2)
@@ -573,7 +573,7 @@ func UnescapePunctuations(source []byte) []byte {
 // ResolveNumericReferences resolve numeric references like '&#1234;" .
 func ResolveNumericReferences(source []byte) []byte {
 	cob := NewCopyOnWriteBuffer(source)
-	buf := make([]byte, 6, 6)
+	buf := make([]byte, 6)
 	limit := len(source)
 	ok := false
 	n := 0
@@ -658,9 +658,9 @@ var htmlSpace = []byte("%20")
 
 // URLEscape escape the given URL.
 // If resolveReference is set true:
-//   1. unescape punctuations
-//   2. resolve numeric references
-//   3. resolve entity references
+//  1. unescape punctuations
+//  2. resolve numeric references
+//  3. resolve entity references
 //
 // URL encoded values (%xx) are kept as is.
 func URLEscape(v []byte, resolveReference bool) []byte {
